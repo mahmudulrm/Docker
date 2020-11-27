@@ -1,0 +1,22 @@
+version: '3.3'                  
+services:       
+   web:
+     container_name: php_host   
+     image: php:rc-apache       
+     ports:                     
+       - "3002:80"              
+     volumes:                   
+       - /var/www/html:/var/www/html   
+   DB: 
+     container_name: mysql_host 
+     image: mariadb:latest      
+     ports:                     
+       - "3306:3306"            
+     volumes:                   
+       - /var/lib/mysql:/var/lib/mysql 
+     environment:
+	   MYSQL_ALLOW_EMPTY_PASSWORD: 1
+       MYSQL_DATABASE: database_host   
+       MYSQL_USER: dbuser       
+       MYSQL_PASSWORD: Db@123
+	   

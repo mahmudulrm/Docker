@@ -1,0 +1,59 @@
+---
+version: "3"
+services:
+  db:
+    image: "postgres:9.4"
+    container_name: db
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+  redis:
+    image: redis
+    container_name: redis
+  result:
+    image: result-app
+    container_name: result-app
+    links:
+      - db
+    ports:
+      - "5001:80"
+  vote:
+    image: voting-app
+    container_name: voting-app
+    links:
+      - redis
+      ports:
+      - "5000:80"
+  worker:
+    image: worker-app
+    container_name: worker-app
+    links:
+      - db
+      - redis
+
+
+
+depends_on:
+      - "db"
+
+
+=====
+
+docker-compose up  
+  
+----inline commnad to convert compose ----
+
+docker run -d -e POSTGRES_PASSWORD="postgres" --name=db postgres:9.4
+docker run -d --name=redis redis
+
+docker build . -t voting-app
+docker run -d  -p 5000:80 voting-app
+
+docker build . -t result-app
+docker run -d -p 5001:80 --link db:db -t result-app
+
+docker build . -t worker-app
+docker run -d --link redis:redis --link db:db worker-app
+
+
+
